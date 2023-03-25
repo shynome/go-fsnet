@@ -40,9 +40,11 @@ func (fc *File) Write(p []byte) (n int, err error) {
 
 var _ fs.FileInfo = (*File)(nil)
 
+const ModeType = fs.ModeType & ^fs.ModeDir
+
 func (info *File) Name() string       { return info.path }
 func (info *File) Size() int64        { return 4096 }
-func (info *File) Mode() fs.FileMode  { return fs.ModeType }
+func (info *File) Mode() fs.FileMode  { return ModeType }
 func (info *File) ModTime() time.Time { return time.Now() }
-func (info *File) IsDir() bool        { return false }
+func (info *File) IsDir() bool        { return info.Mode().IsDir() }
 func (info *File) Sys() any           { return nil }
