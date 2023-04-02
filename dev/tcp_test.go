@@ -3,14 +3,12 @@ package dev_test
 import (
 	"fmt"
 	"io"
-	"io/fs"
 	"net"
 	"net/http"
 	"testing"
 
 	"github.com/lainio/err2/assert"
 	"github.com/lainio/err2/try"
-	"github.com/shynome/go-fsnet"
 	"github.com/shynome/go-fsnet/dev"
 )
 
@@ -18,17 +16,6 @@ var l net.Listener
 var word = "hello world"
 
 func TestMain(m *testing.M) {
-
-	var fsnet = fsnet.New("")
-	var OpenFile dev.FileOpener = func(name string, flag int, perm fs.FileMode) (io.ReadWriteCloser, error) {
-		f, err := fsnet.Open(name)
-		if err != nil {
-			return nil, err
-		}
-		return f.(io.ReadWriteCloser), nil
-	}
-	dev.SetFileOpener(OpenFile)
-
 	l = try.To1(net.Listen("tcp", "127.0.0.1:0"))
 	defer l.Close()
 	go http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
