@@ -1,15 +1,22 @@
 package dev_test
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/lainio/err2/assert"
 	"github.com/lainio/err2/try"
+	"github.com/shynome/go-fsnet"
 	"github.com/shynome/go-fsnet/dev"
+	"github.com/tetratelabs/wazero"
+	"github.com/tetratelabs/wazero/experimental/gojs"
 )
 
 var l net.Listener
@@ -36,5 +43,33 @@ func TestFsNet(t *testing.T) {
 }
 
 func TestWasiFsNet(t *testing.T) {
-	t.Log("see: https://github.com/shynome/go-wagi/blob/master/internal/fsnet/wasm_test.go")
+	buildWasm()
+
+	ctx := context.Background()
+	rtc := wazero.NewRuntimeConfigInterpreter()
+	rt := wazero.NewRuntimeWithConfig(ctx, rtc)
+	gojs.MustInstantiate(ctx, rt)
+
+	mb := try.To1(os.ReadFile("testdata/main.wasm"))
+	m := try.To1(rt.CompileModule(ctx, mb))
+
+	mc := wazero.NewModuleConfig()
+	fsc := wazero.NewFSConfig()
+	fsc = fsc.WithFSMount(fsnet.New("/dev/"), "/dev")
+	mc = mc.WithFSConfig(fsc)
+	var stdout bytes.Buffer
+	mc = mc.
+		WithArgs("wasi", l.Addr().String()).
+		WithStderr(os.Stderr).
+		WithStdout(&stdout)
+
+	gojs.Run(ctx, rt, m, gojs.NewConfig(mc))
+
+	assert.Equal(stdout.String(), word)
+}
+
+func buildWasm() {
+	cmd := exec.Command("go", "build", "-o", "testdata/main.wasm", "./testdata/main.go")
+	cmd.Env = append(os.Environ(), "GOOS=js", "GOARCH=wasm")
+	try.To(cmd.Run())
 }
