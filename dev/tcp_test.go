@@ -16,7 +16,7 @@ import (
 	"github.com/shynome/go-fsnet"
 	"github.com/shynome/go-fsnet/dev"
 	"github.com/tetratelabs/wazero"
-	"github.com/tetratelabs/wazero/experimental/gojs"
+	"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 )
 
 var l net.Listener
@@ -48,7 +48,7 @@ func TestWasiFsNet(t *testing.T) {
 	ctx := context.Background()
 	rtc := wazero.NewRuntimeConfigInterpreter()
 	rt := wazero.NewRuntimeWithConfig(ctx, rtc)
-	gojs.MustInstantiate(ctx, rt)
+	wasi_snapshot_preview1.MustInstantiate(ctx, rt)
 
 	mb := try.To1(os.ReadFile("testdata/main.wasm"))
 	m := try.To1(rt.CompileModule(ctx, mb))
@@ -63,13 +63,13 @@ func TestWasiFsNet(t *testing.T) {
 		WithStderr(os.Stderr).
 		WithStdout(&stdout)
 
-	gojs.Run(ctx, rt, m, gojs.NewConfig(mc))
+	rt.InstantiateModule(ctx, m, mc)
 
 	assert.Equal(stdout.String(), word)
 }
 
 func buildWasm() {
 	cmd := exec.Command("go", "build", "-o", "testdata/main.wasm", "./testdata/main.go")
-	cmd.Env = append(os.Environ(), "GOOS=js", "GOARCH=wasm")
+	cmd.Env = append(os.Environ(), "GOOS=wasip1", "GOARCH=wasm")
 	try.To(cmd.Run())
 }

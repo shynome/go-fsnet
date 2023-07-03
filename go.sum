@@ -2,3 +2,7 @@ github.com/lainio/err2 v0.8.13 h1:Z343j4s/ld+T/1wMKV+jYchtID266TC8f0UIuJhpM3Q=
 github.com/lainio/err2 v0.8.13/go.mod h1:FmcNs9IbLaDMScvPX4iO5dBsbHl8EnS3ybqP31z/RUk=
 github.com/tetratelabs/wazero v1.0.1 h1:xyWBoGyMjYekG3mEQ/W7xm9E05S89kJ/at696d/9yuc=
 github.com/tetratelabs/wazero v1.0.1/go.mod h1:wYx2gNRg8/WihJfSDxA1TIL8H+GkfLYm+bIfbblu9VQ=
+github.com/tetratelabs/wazero v1.2.1 h1:J4X2hrGzJvt+wqltuvcSjHQ7ujQxA9gb6PeMs4qlUWs=
+github.com/tetratelabs/wazero v1.2.1/go.mod h1:wYx2gNRg8/WihJfSDxA1TIL8H+GkfLYm+bIfbblu9VQ=
+github.com/tetratelabs/wazero v1.2.2-0.20230702045944-511b032fa610 h1:3tCJhiIxsqLcPoJxJF6zo+kpgZ/hARSgCAu8aBfuNKA=
+github.com/tetratelabs/wazero v1.2.2-0.20230702045944-511b032fa610/go.mod h1:wYx2gNRg8/WihJfSDxA1TIL8H+GkfLYm+bIfbblu9VQ=
