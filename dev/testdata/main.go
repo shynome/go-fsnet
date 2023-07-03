@@ -10,10 +10,12 @@ import (
 	"github.com/shynome/go-fsnet/dev"
 )
 
+func init() {
+	http.DefaultClient = &http.Client{Transport: dev.Transport}
+}
+
 func main() {
-	client := &http.Client{Transport: dev.Transport}
 	addr := fmt.Sprintf("http://%s", os.Args[1])
-	req := try.To1(http.NewRequest(http.MethodGet, addr, nil))
-	resp := try.To1(client.Do(req))
+	resp := try.To1(http.Get(addr))
 	io.Copy(os.Stdout, resp.Body)
 }
