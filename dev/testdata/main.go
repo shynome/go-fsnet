@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/lainio/err2/try"
+	"github.com/shynome/err0/try"
 	"github.com/shynome/go-fsnet/dev"
 )
 

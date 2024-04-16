@@ -11,10 +11,10 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/lainio/err2/assert"
-	"github.com/lainio/err2/try"
+	"github.com/shynome/err0/try"
 	"github.com/shynome/go-fsnet"
 	"github.com/shynome/go-fsnet/dev"
+	"github.com/stretchr/testify/assert"
 	"github.com/tetratelabs/wazero"
 	"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 )
@@ -39,7 +39,7 @@ func TestFsNet(t *testing.T) {
 	req := try.To1(http.NewRequest(http.MethodGet, addr, nil))
 	resp := try.To1(client.Do(req))
 	b := try.To1(io.ReadAll(resp.Body))
-	assert.Equal(string(b), word)
+	assert.Equal(t, string(b), word)
 }
 
 func TestWasiFsNet(t *testing.T) {
@@ -65,11 +65,12 @@ func TestWasiFsNet(t *testing.T) {
 
 	rt.InstantiateModule(ctx, m, mc)
 
-	assert.Equal(stdout.String(), word)
+	assert.Equal(t, stdout.String(), word)
 }
 
 func buildWasm() {
 	cmd := exec.Command("go", "build", "-o", "testdata/main.wasm", "./testdata/main.go")
+	cmd.Stderr = os.Stderr
 	cmd.Env = append(os.Environ(), "GOOS=wasip1", "GOARCH=wasm")
 	try.To(cmd.Run())
 }
