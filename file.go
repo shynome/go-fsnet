@@ -3,20 +3,19 @@ package fsnet
 import (
 	"io"
 	"io/fs"
-	"net"
 	"time"
 )
 
 type File struct {
-	conn net.Conn
+	conn io.ReadWriteCloser
 	path string
 }
 
 var _ fs.File = (*File)(nil)
 
-func NewFile(name string, conn net.Conn) *File {
+func NewFile(name string, rwc io.ReadWriteCloser) *File {
 	return &File{
-		conn: conn,
+		conn: rwc,
 		path: name,
 	}
 }
