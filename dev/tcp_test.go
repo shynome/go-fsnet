@@ -60,7 +60,8 @@ func TestWasiFsNet(t *testing.T) {
 
 	mc := wazero.NewModuleConfig()
 	fsc := wazero.NewFSConfig()
-	fsc = fsc.WithFSMount(fsnet.New("/dev/"), "/dev")
+	fsc = fsc.WithFSMount(fsnet.New("/dev/tcp/"), "/dev/tcp")
+	fsc = fsc.WithFSMount(fsnet.New("/dev/udp/"), "/dev/udp")
 	mc = mc.WithFSConfig(fsc)
 	var stdout bytes.Buffer
 	mc = mc.
