@@ -3,13 +3,16 @@ package dev_test
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/exec"
 	"testing"
+	"time"
 
 	"github.com/shynome/err0/try"
 	"github.com/shynome/go-fsnet"
@@ -26,6 +29,8 @@ func TestMain(m *testing.M) {
 	l = try.To1(net.Listen("tcp", "127.0.0.1:0"))
 	defer l.Close()
 	go http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("get request")
+		time.Sleep(5 * time.Second)
 		io.WriteString(w, word)
 	}))
 
@@ -59,6 +64,10 @@ func TestWasiFsNet(t *testing.T) {
 	mc = mc.WithFSConfig(fsc)
 	var stdout bytes.Buffer
 	mc = mc.
+		WithRandSource(rand.Reader).
+		WithSysNanosleep().
+		WithSysNanotime().
+		WithSysWalltime().
 		WithArgs("wasi", l.Addr().String()).
 		WithStderr(os.Stderr).
 		WithStdout(&stdout)
