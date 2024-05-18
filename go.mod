@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/shynome/err0 v0.1.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tetratelabs/wazero v1.7.1
+	github.com/tetratelabs/wazero v1.7.2
 )
 
 require (
